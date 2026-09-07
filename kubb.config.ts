@@ -8,5 +8,10 @@ export default defineConfig({
     path: "./generated", // 生成したコードをどこに出力するか
     clean: true, // 生成のたびに `./generated` ディレクトリを削除する設定
   },
-  plugins: [pluginTs(), pluginFetch()],
+  plugins: [
+    pluginTs(),
+    pluginFetch({
+      baseURL: "https://api.example.com/v1",
+    }),
+  ],
 });

@@ -5,7 +5,8 @@ import type { Book } from "./generated/types/Book";
 
 type GetBookError =
   | { kind: "notFound"; cause: ApiError }
-  | { kind: "transport"; cause: unknown };
+  | { kind: "transport"; cause: unknown }
+  | { kind: "unexpected"; cause: unknown };
 
 const fetchBook = (isbn: string): ResultAsync<Book, GetBookError> =>
   ResultAsync.fromPromise(
@@ -18,7 +19,7 @@ const fetchBook = (isbn: string): ResultAsync<Book, GetBookError> =>
       case 404:
         return err({ kind: "notFound", cause: res.error });
       default:
-        return res satisfies never;
+        return err({ kind: "unexpected", cause: res satisfies never });
     }
   });
 
