@@ -1,0 +1,31 @@
+{
+  "name": "kubb-custom-fetch-client-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "codegen": "kubb generate",
+    "fmt": "biome check --write"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.22.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.11",
+    "@kubb/plugin-fetch": "^5.2.0",
+    "@kubb/plugin-ts": "^5.0.0",
+    "kubb": "^5.0.6",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "neverthrow": "^8.2.0"
+  }
+}

@@ -1,0 +1,80 @@
+openapi: 3.1.0
+info:
+  title: Book API
+  description: 本を取得するAPI
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+
+paths:
+  /books/{isbn}:
+    get:
+      summary: 書籍を 1 件取得する
+      operationId: getBook
+      parameters:
+        - name: isbn
+          in: path
+          description: 書籍の ISBN-10
+          required: true
+          schema:
+            type: string
+            examples:
+              - '4299039009'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - isbn
+        - title
+        - author
+      properties:
+        isbn:
+          type: string
+          examples:
+            - '4299039009'
+        title:
+          type: string
+          maxLength: 200
+          examples:
+            - 魔神の一皿
+        author:
+          type: string
+          maxLength: 100
+          examples:
+            - 布団ちゃん
+        publishedYear:
+          type: integer
+          format: int32
+          examples:
+            - 2023
+
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          examples:
+            - not_found
+        message:
+          type: string
+          examples:
+            - Book not found
