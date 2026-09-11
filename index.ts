@@ -1,31 +1,23 @@
-import { err, ok, type Result, ResultAsync } from "neverthrow";
-import { getBook } from "./generated/clients";
-import type { ApiError } from "./generated/types/ApiError";
-import type { Book } from "./generated/types/Book";
+import { getBook } from "./generated/fetch-neverthrow";
 
-type GetBookError =
-  | { kind: "notFound"; cause: ApiError }
-  | { kind: "transport"; cause: unknown }
-  | { kind: "unexpected"; cause: unknown };
-
-const fetchBook = (isbn: string): ResultAsync<Book, GetBookError> =>
-  ResultAsync.fromPromise(
-    getBook({ path: { isbn }, throwOnError: false }),
-    (cause): GetBookError => ({ kind: "transport", cause }),
-  ).andThen((res): Result<Book, GetBookError> => {
-    switch (res.status) {
-      case 200:
-        return ok(res.data);
-      case 404:
-        return err({ kind: "notFound", cause: res.error });
-      default:
-        return err({ kind: "unexpected", cause: res satisfies never });
-    }
-  });
-
-const result = await fetchBook("4299039009");
+const result = await getBook({ path: { isbn: "4299039009" } });
 
 result.match(
   (book) => console.log("ok", book.title),
-  ({ kind, cause }) => console.error(kind, cause),
+  (error) => {
+    switch (error.kind) {
+      case "transport":
+        console.error("transport", error.cause);
+        break;
+      case "http":
+        // OpenAPI に書かれた 404 だけがここに来る。status は 404、body は ApiError に絞られている
+        console.error(error.status, error.body.code, error.body.message);
+        break;
+      case "unexpected":
+        console.error("unexpected", error.status, error.body);
+        break;
+      default:
+        error satisfies never;
+    }
+  },
 );
