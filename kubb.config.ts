@@ -1,7 +1,7 @@
 import { pluginFetch } from "@kubb/plugin-fetch";
 import { pluginTs } from "@kubb/plugin-ts";
 import { defineConfig } from "kubb";
-import { pluginHello } from "./kubb-plugins/fetch-neverthrow";
+import { pluginFetchNeverthrow } from "./kubb-plugins/plugin-fetch-neverthrow";
 
 export default defineConfig({
   input: "./openapi.yaml", // 生成元になるOpenAPIスキーマ
@@ -10,10 +10,10 @@ export default defineConfig({
     clean: true, // 生成のたびに `./generated` ディレクトリを削除する設定
   },
   plugins: [
-    pluginHello(),
     pluginTs(),
     pluginFetch({
       baseURL: "https://api.example.com/v1",
     }),
+    pluginFetchNeverthrow(), // 自作: plugin-fetch の client を neverthrow で包む
   ],
 });
